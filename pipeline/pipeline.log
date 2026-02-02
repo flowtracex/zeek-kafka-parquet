@@ -1,4 +1,0 @@
-2026/02/02 07:22:44 Pipeline started. Press Ctrl+C to stop...
-2026/02/02 07:22:44 Consuming from Kafka topic: zeek-logs, group: parquet-writer-group-test
-2026/02/02 07:22:44 Output path: ./output
-2026/02/02 07:22:44 Buffer flush size: 1 MB

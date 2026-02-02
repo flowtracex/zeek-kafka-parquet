@@ -25,26 +25,28 @@ type Config struct {
 		FilePrefix string `json:"file_prefix"`
 	} `json:"output"`
 	Write struct {
-		FlushBufferMB int `json:"flush_buffer_mb"`
+		FlushBufferMB      int `json:"flush_buffer_mb"`
+		FlushIntervalSec   int `json:"flush_interval_seconds"`
+		FlushEventCount   int `json:"flush_event_count"`
 	} `json:"write"`
 }
 
 func main() {
 	// Load configuration
-	configData, err := os.ReadFile("config.json")
+	configData, err := os.ReadFile("config/config.json")
 	if err != nil {
-		log.Fatalf("Failed to read config.json: %v", err)
+		log.Fatalf("Failed to read config/config.json: %v", err)
 	}
 
 	var config Config
 	if err := json.Unmarshal(configData, &config); err != nil {
-		log.Fatalf("Failed to parse config.json: %v", err)
+		log.Fatalf("Failed to parse config/config.json: %v", err)
 	}
 
 	// Load normalization rules
-	normData, err := os.ReadFile("normalization.json")
+	normData, err := os.ReadFile("config/normalization.json")
 	if err != nil {
-		log.Fatalf("Failed to read normalization.json: %v", err)
+		log.Fatalf("Failed to read config/normalization.json: %v", err)
 	}
 
 	normalizationRules, err := core.LoadNormalizationRules(normData)
@@ -72,17 +74,24 @@ func main() {
 	}
 
 	normalizer := core.NewNormalizer(normalizationRules)
-	enricher := core.NewEnricher()
+	enricher := core.NewEnricher() // No config needed - uses per-event enrichment flags
 
-	// Define log types to support
-	logTypes := []string{"dns", "conn"}
+	// Get all log types from normalization rules
+	logTypes := make([]string, 0, len(normalizationRules))
+	for logType := range normalizationRules {
+		logTypes = append(logTypes, logType)
+	}
+	log.Printf("Processing %d log types: %v", len(logTypes), logTypes)
+	
 	dispatcher := core.NewDispatcher(logTypes, 10000) // Buffer size per route
 
 	// Create Parquet writers for each log type
 	writerConfig := core.WriterConfig{
-		BasePath:      config.Output.BasePath,
-		FilePrefix:    config.Output.FilePrefix,
-		FlushBufferMB: config.Write.FlushBufferMB,
+		BasePath:         config.Output.BasePath,
+		FilePrefix:       config.Output.FilePrefix,
+		FlushBufferMB:    config.Write.FlushBufferMB,
+		FlushIntervalSec: config.Write.FlushIntervalSec,
+		FlushEventCount:  config.Write.FlushEventCount,
 	}
 
 	var wg sync.WaitGroup
@@ -139,8 +148,7 @@ func main() {
 				// Normalize
 				normalized, err := normalizer.Normalize(zeekLog)
 				if err != nil {
-					// Silently skip unsupported log types (weird, telemetry, ssh, etc.)
-					// These are expected - we only process dns and conn
+					// Skip log types that don't have normalization rules
 					continue
 				}
 				normalizedChan <- normalized

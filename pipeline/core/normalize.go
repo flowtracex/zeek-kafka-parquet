@@ -22,14 +22,17 @@ type NormalizedEvent struct {
 	// Preserve all original Zeek fields as a map
 	ZeekFields map[string]interface{}
 
-	// DNS-specific fields
-	DNSQuery string
-	QType    string
-	RCode    int32
+	// Log-type-specific promoted fields (only if in normalization.json)
+	Protocol  string // CONN: promoted from proto
+	ConnState string // CONN: promoted from conn_state
 
-	// CONN-specific fields
-	Protocol  string
-	ConnState string
+	// Per-log enrichment flags (from normalization.json enrich section)
+	EnrichTime    bool
+	EnrichNetwork bool
+
+	// Static fields from normalization.json
+	EventType  string // From static.event_type
+	EventClass string // From static.event_class
 }
 
 // Normalizer maps Zeek logs to normalized events
@@ -37,11 +40,18 @@ type Normalizer struct {
 	normalizationRules map[string]NormalizationRule
 }
 
-// NormalizationRule defines how to map Zeek fields
+// EnrichConfig defines per-log enrichment flags
+type EnrichConfig struct {
+	Time    bool `json:"time"`    // Time enrichment flag
+	Network bool `json:"network"` // Network enrichment flag
+}
+
+// NormalizationRule defines how to promote Zeek fields
 type NormalizationRule struct {
-	Source string            `json:"source"`
-	Map    map[string]string `json:"map"`
-	Static map[string]string `json:"static"`
+	Source  string            `json:"source"`
+	Promote map[string]string `json:"promote"` // Field promotion (mapping)
+	Static  map[string]string `json:"static"`
+	Enrich  *EnrichConfig     `json:"enrich"` // Per-log enrichment flags (optional)
 }
 
 // NewNormalizer creates a normalizer from normalization.json
@@ -64,6 +74,26 @@ func (n *Normalizer) Normalize(zeekLog *ZeekLog) (*NormalizedEvent, error) {
 		IngestTime: time.Now().UnixNano() / int64(time.Millisecond),
 		ZeekFields: make(map[string]interface{}),
 		RawLog:     zeekLog.Raw,
+		// Set enrichment flags from rule (default to false if not specified)
+		EnrichTime:    false,
+		EnrichNetwork: false,
+		// Set static fields from rule
+		EventType:  zeekLog.LogType, // Default to log type
+		EventClass: "unknown",        // Default
+	}
+
+	// Apply enrichment flags from normalization rule
+	if rule.Enrich != nil {
+		event.EnrichTime = rule.Enrich.Time
+		event.EnrichNetwork = rule.Enrich.Network
+	}
+
+	// Apply static fields from normalization rule
+	if eventType, ok := rule.Static["event_type"]; ok {
+		event.EventType = eventType
+	}
+	if eventClass, ok := rule.Static["event_class"]; ok {
+		event.EventClass = eventClass
 	}
 
 	// Copy all original Zeek fields
@@ -71,8 +101,11 @@ func (n *Normalizer) Normalize(zeekLog *ZeekLog) (*NormalizedEvent, error) {
 		event.ZeekFields[k] = v
 	}
 
-	// Apply field mappings
-	for zeekField, normField := range rule.Map {
+	// Apply field promotion (mapping)
+	// normalization.json defines: zeekField -> normField
+	// Example: "qtype_name" -> "qtype" means read qtype_name from Zeek, store as qtype
+	// Promoted fields replace raw fields (no duplication)
+	for zeekField, normField := range rule.Promote {
 		value, ok := zeekLog.Data[zeekField]
 		if !ok {
 			continue
@@ -107,20 +140,6 @@ func (n *Normalizer) Normalize(zeekLog *ZeekLog) (*NormalizedEvent, error) {
 		case "flow_id":
 			if uid, ok := value.(string); ok {
 				event.FlowID = uid
-			}
-		case "dns_query":
-			if query, ok := value.(string); ok {
-				event.DNSQuery = query
-			}
-		case "qtype":
-			if qtype, ok := value.(string); ok {
-				event.QType = qtype
-			}
-		case "rcode":
-			if rcode, ok := value.(float64); ok {
-				event.RCode = int32(rcode)
-			} else if rcode, ok := value.(int); ok {
-				event.RCode = int32(rcode)
 			}
 		case "protocol":
 			if proto, ok := value.(string); ok {

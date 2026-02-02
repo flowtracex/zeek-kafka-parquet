@@ -9,39 +9,39 @@ import (
 type EnrichedEvent struct {
 	*NormalizedEvent
 
-	// Time enrichment
+	// Time enrichment (applied if event.EnrichTime == true)
 	EventYear    int32
 	EventMonth   int32
 	EventDay     int32
 	EventHour    int32
 	EventWeekday int32
 
-	// IP enrichment
+	// Network enrichment (applied if event.EnrichNetwork == true)
 	SrcIPIsPrivate bool
 	DstIPIsPrivate bool
-
-	// Direction and service
-	Direction string
-	Service   string
+	Direction      string
+	Service        string
 }
 
 // Enricher applies common enrichment to normalized events
+// Enrichment is controlled per-event via EnrichTime and EnrichNetwork flags
 type Enricher struct{}
 
-// NewEnricher creates a new enricher
+// NewEnricher creates a new enricher (no config needed - uses per-event flags)
 func NewEnricher() *Enricher {
 	return &Enricher{}
 }
 
-// Enrich applies common enrichment to a normalized event
-// ONLY common enrichment - no log-type-specific enrichment
+// Enrich applies enrichment to a normalized event based on per-event flags
+// Time enrichment: applied if event.EnrichTime == true
+// Network enrichment: conditionally applied if event.EnrichNetwork == true and required fields exist
 func (e *Enricher) Enrich(event *NormalizedEvent) *EnrichedEvent {
 	enriched := &EnrichedEvent{
 		NormalizedEvent: event,
 	}
 
-	// Time enrichment from event_time
-	if event.EventTime > 0 {
+	// Time enrichment (always applied if enabled for this log type)
+	if event.EnrichTime && event.EventTime > 0 {
 		t := time.Unix(event.EventTime/1000, (event.EventTime%1000)*int64(time.Millisecond))
 		enriched.EventYear = int32(t.Year())
 		enriched.EventMonth = int32(t.Month())
@@ -50,15 +50,30 @@ func (e *Enricher) Enrich(event *NormalizedEvent) *EnrichedEvent {
 		enriched.EventWeekday = int32(t.Weekday())
 	}
 
-	// IP enrichment
-	enriched.SrcIPIsPrivate = isPrivateIP(event.SrcIP)
-	enriched.DstIPIsPrivate = isPrivateIP(event.DstIP)
+	// Network enrichment (conditional, skip if fields missing)
+	if event.EnrichNetwork {
+		// src_ip_is_private requires src_ip
+		if event.SrcIP != "" {
+			enriched.SrcIPIsPrivate = isPrivateIP(event.SrcIP)
+		}
 
-	// Direction derivation
-	enriched.Direction = deriveDirection(enriched.SrcIPIsPrivate, enriched.DstIPIsPrivate)
+		// dst_ip_is_private requires dst_ip
+		if event.DstIP != "" {
+			enriched.DstIPIsPrivate = isPrivateIP(event.DstIP)
+		}
 
-	// Service mapping from dst_port
-	enriched.Service = portToService(event.DstPort)
+		// direction requires src_ip + dst_ip
+		if event.SrcIP != "" && event.DstIP != "" {
+			enriched.Direction = deriveDirection(enriched.SrcIPIsPrivate, enriched.DstIPIsPrivate)
+		}
+
+		// service requires dst_port OR protocol
+		if event.DstPort > 0 {
+			enriched.Service = portToService(event.DstPort)
+		} else if event.Protocol != "" {
+			enriched.Service = protocolToService(event.Protocol)
+		}
+	}
 
 	return enriched
 }
@@ -127,3 +142,16 @@ func portToService(port int32) string {
 	return "unknown"
 }
 
+// protocolToService maps protocol to service name
+func protocolToService(protocol string) string {
+	protocolMap := map[string]string{
+		"tcp":  "tcp",
+		"udp":  "udp",
+		"icmp": "icmp",
+	}
+
+	if service, ok := protocolMap[protocol]; ok {
+		return service
+	}
+	return protocol // Return protocol as-is if not in map
+}
