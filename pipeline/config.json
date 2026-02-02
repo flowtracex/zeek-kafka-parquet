@@ -1,0 +1,16 @@
+{
+  "kafka": {
+    "brokers": ["localhost:9092"],
+    "topic": "zeek-raw",
+    "group_id": "parquet-writer-group-test",
+    "max_poll_records": 1000
+  },
+  "output": {
+    "base_path": "./output",
+    "file_prefix": "events"
+  },
+  "write": {
+    "flush_buffer_mb": 1
+  }
+}
+
