@@ -16,13 +16,13 @@ A production-ready pipeline that consumes Zeek network logs from Kafka, normaliz
 ### Build
 
 ```bash
-go build -o pipeline main.go
+go build -o zeek-parquet-pipeline main.go
 ```
 
 ### Run
 
 ```bash
-./pipeline --config config/config.json
+./zeek-parquet-pipeline --config config/config.json
 ```
 
 ## Configuration
@@ -118,7 +118,7 @@ Fan-out
 ```
 .
 ├── main.go                 # Pipeline entry point
-├── pipeline               # Compiled binary
+├── zeek-parquet-pipeline  # Compiled binary
 ├── config/                # Configuration files
 │   ├── config.json        # Main configuration
 │   ├── normalization.json # Field promotion rules
@@ -204,7 +204,7 @@ After updating `schema.json` or `normalization.json`:
 
 ```bash
 go run generate_schema.go > schema/events.go
-go build -o pipeline main.go
+go build -o zeek-parquet-pipeline main.go
 ```
 
 ### Testing
