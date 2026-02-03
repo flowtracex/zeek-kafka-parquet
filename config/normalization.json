@@ -1,0 +1,348 @@
+{
+  "conn": {
+    "source": "zeek_conn",
+    "promote": {
+      "ts": "event_time",
+      "uid": "flow_id",
+      "id.orig_h": "src_ip",
+      "id.resp_h": "dst_ip",
+      "id.orig_p": "src_port",
+      "id.resp_p": "dst_port",
+      "proto": "protocol",
+      "service": "service"
+    },
+    "static": {
+      "event_type": "network_connection",
+      "event_class": "network"
+    },
+    "enrich": {
+      "time": true,
+      "network": true
+    }
+  },
+
+  "dns": {
+    "source": "zeek_dns",
+    "promote": {
+      "ts": "event_time",
+      "uid": "flow_id",
+      "id.orig_h": "src_ip",
+      "id.resp_h": "dst_ip",
+      "proto": "protocol"
+    },
+    "static": {
+      "event_type": "dns",
+      "event_class": "dns"
+    },
+    "enrich": {
+      "time": true,
+      "network": true
+    }
+  },
+
+  "http": {
+    "source": "zeek_http",
+    "promote": {
+      "ts": "event_time",
+      "uid": "flow_id",
+      "id.orig_h": "src_ip",
+      "id.resp_h": "dst_ip",
+      "id.orig_p": "src_port",
+      "id.resp_p": "dst_port"
+    },
+    "static": {
+      "event_type": "http",
+      "event_class": "application"
+    },
+    "enrich": {
+      "time": true,
+      "network": true
+    }
+  },
+
+  "ssl": {
+    "source": "zeek_ssl",
+    "promote": {
+      "ts": "event_time",
+      "uid": "flow_id",
+      "id.orig_h": "src_ip",
+      "id.resp_h": "dst_ip",
+      "id.orig_p": "src_port",
+      "id.resp_p": "dst_port"
+    },
+    "static": {
+      "event_type": "ssl",
+      "event_class": "crypto"
+    },
+    "enrich": {
+      "time": true,
+      "network": true
+    }
+  },
+
+  "ssh": {
+    "source": "zeek_ssh",
+    "promote": {
+      "ts": "event_time",
+      "uid": "flow_id",
+      "id.orig_h": "src_ip",
+      "id.resp_h": "dst_ip",
+      "id.orig_p": "src_port",
+      "id.resp_p": "dst_port"
+    },
+    "static": {
+      "event_type": "ssh",
+      "event_class": "authentication"
+    },
+    "enrich": {
+      "time": true,
+      "network": true
+    }
+  },
+
+  "ftp": {
+    "source": "zeek_ftp",
+    "promote": {
+      "ts": "event_time",
+      "uid": "flow_id",
+      "id.orig_h": "src_ip",
+      "id.resp_h": "dst_ip",
+      "id.orig_p": "src_port",
+      "id.resp_p": "dst_port"
+    },
+    "static": {
+      "event_type": "ftp",
+      "event_class": "application"
+    },
+    "enrich": {
+      "time": true,
+      "network": true
+    }
+  },
+
+  "smtp": {
+    "source": "zeek_smtp",
+    "promote": {
+      "ts": "event_time",
+      "uid": "flow_id",
+      "id.orig_h": "src_ip",
+      "id.resp_h": "dst_ip",
+      "id.orig_p": "src_port",
+      "id.resp_p": "dst_port"
+    },
+    "static": {
+      "event_type": "smtp",
+      "event_class": "email"
+    },
+    "enrich": {
+      "time": true,
+      "network": true
+    }
+  },
+
+  "dhcp": {
+    "source": "zeek_dhcp",
+    "promote": {
+      "ts": "event_time",
+      "uid": "flow_id"
+    },
+    "static": {
+      "event_type": "dhcp",
+      "event_class": "network"
+    },
+    "enrich": {
+      "time": true,
+      "network": false
+    }
+  },
+
+  "rdp": {
+    "source": "zeek_rdp",
+    "promote": {
+      "ts": "event_time",
+      "uid": "flow_id",
+      "id.orig_h": "src_ip",
+      "id.resp_h": "dst_ip",
+      "id.orig_p": "src_port",
+      "id.resp_p": "dst_port"
+    },
+    "static": {
+      "event_type": "rdp",
+      "event_class": "remote_access"
+    },
+    "enrich": {
+      "time": true,
+      "network": true
+    }
+  },
+
+  "smb_files": {
+    "source": "zeek_smb_files",
+    "promote": {
+      "ts": "event_time",
+      "uid": "flow_id",
+      "id.orig_h": "src_ip",
+      "id.resp_h": "dst_ip"
+    },
+    "static": {
+      "event_type": "smb_file",
+      "event_class": "file"
+    },
+    "enrich": {
+      "time": true,
+      "network": true
+    }
+  },
+
+  "smb_mapping": {
+    "source": "zeek_smb_mapping",
+    "promote": {
+      "ts": "event_time",
+      "uid": "flow_id",
+      "id.orig_h": "src_ip",
+      "id.resp_h": "dst_ip"
+    },
+    "static": {
+      "event_type": "smb_mapping",
+      "event_class": "file"
+    },
+    "enrich": {
+      "time": true,
+      "network": true
+    }
+  },
+
+  "dce_rpc": {
+    "source": "zeek_dce_rpc",
+    "promote": {
+      "ts": "event_time",
+      "uid": "flow_id",
+      "id.orig_h": "src_ip",
+      "id.resp_h": "dst_ip",
+      "id.orig_p": "src_port",
+      "id.resp_p": "dst_port"
+    },
+    "static": {
+      "event_type": "dce_rpc",
+      "event_class": "rpc"
+    },
+    "enrich": {
+      "time": true,
+      "network": true
+    }
+  },
+
+  "kerberos": {
+    "source": "zeek_kerberos",
+    "promote": {
+      "ts": "event_time",
+      "uid": "flow_id",
+      "id.orig_h": "src_ip",
+      "id.resp_h": "dst_ip",
+      "id.orig_p": "src_port",
+      "id.resp_p": "dst_port"
+    },
+    "static": {
+      "event_type": "kerberos",
+      "event_class": "authentication"
+    },
+    "enrich": {
+      "time": true,
+      "network": true
+    }
+  },
+
+  "ntlm": {
+    "source": "zeek_ntlm",
+    "promote": {
+      "ts": "event_time",
+      "uid": "flow_id",
+      "id.orig_h": "src_ip",
+      "id.resp_h": "dst_ip"
+    },
+    "static": {
+      "event_type": "ntlm",
+      "event_class": "authentication"
+    },
+    "enrich": {
+      "time": true,
+      "network": true
+    }
+  },
+
+  "sip": {
+    "source": "zeek_sip",
+    "promote": {
+      "ts": "event_time",
+      "uid": "flow_id",
+      "id.orig_h": "src_ip",
+      "id.resp_h": "dst_ip",
+      "id.orig_p": "src_port",
+      "id.resp_p": "dst_port"
+    },
+    "static": {
+      "event_type": "sip",
+      "event_class": "voip"
+    },
+    "enrich": {
+      "time": true,
+      "network": true
+    }
+  },
+
+  "snmp": {
+    "source": "zeek_snmp",
+    "promote": {
+      "ts": "event_time",
+      "uid": "flow_id",
+      "id.orig_h": "src_ip",
+      "id.resp_h": "dst_ip",
+      "id.orig_p": "src_port",
+      "id.resp_p": "dst_port"
+    },
+    "static": {
+      "event_type": "snmp",
+      "event_class": "network_management"
+    },
+    "enrich": {
+      "time": true,
+      "network": true
+    }
+  },
+
+  "radius": {
+    "source": "zeek_radius",
+    "promote": {
+      "ts": "event_time",
+      "uid": "flow_id",
+      "id.orig_h": "src_ip",
+      "id.resp_h": "dst_ip",
+      "id.orig_p": "src_port",
+      "id.resp_p": "dst_port"
+    },
+    "static": {
+      "event_type": "radius",
+      "event_class": "authentication"
+    },
+    "enrich": {
+      "time": true,
+      "network": true
+    }
+  },
+
+  "tunnel": {
+    "source": "zeek_tunnel",
+    "promote": {
+      "ts": "event_time",
+      "uid": "flow_id"
+    },
+    "static": {
+      "event_type": "tunnel",
+      "event_class": "network"
+    },
+    "enrich": {
+      "time": true,
+      "network": false
+    }
+  }
+}

@@ -1,0 +1,446 @@
+{
+  "zeek_conn": {
+    "log_type": "conn",
+    "fields": {
+      "ts": "float",
+      "uid": "string",
+      "id.orig_h": "string",
+      "id.orig_p": "int",
+      "id.resp_h": "string",
+      "id.resp_p": "int",
+      "proto": "string",
+      "service": "string",
+      "duration": "float",
+      "orig_bytes": "int",
+      "resp_bytes": "int",
+      "conn_state": "string",
+      "local_orig": "bool",
+      "local_resp": "bool",
+      "missed_bytes": "int",
+      "history": "string",
+      "orig_pkts": "int",
+      "orig_ip_bytes": "int",
+      "resp_pkts": "int",
+      "resp_ip_bytes": "int",
+      "tunnel_parents": "string",
+      "ip_proto": "int"
+    }
+  },
+
+  "zeek_dns": {
+    "log_type": "dns",
+    "fields": {
+      "ts": "float",
+      "uid": "string",
+      "id.orig_h": "string",
+      "id.orig_p": "int",
+      "id.resp_h": "string",
+      "id.resp_p": "int",
+      "proto": "string",
+      "trans_id": "int",
+      "query": "string",
+      "qclass": "int",
+      "qclass_name": "string",
+      "qtype": "int",
+      "qtype_name": "string",
+      "rcode": "int",
+      "rcode_name": "string",
+      "AA": "bool",
+      "TC": "bool",
+      "RD": "bool",
+      "RA": "bool",
+      "Z": "int",
+      "answers": "string",
+      "TTLs": "string",
+      "rejected": "bool"
+    }
+  },
+
+  "zeek_http": {
+    "log_type": "http",
+    "fields": {
+      "ts": "float",
+      "uid": "string",
+      "id.orig_h": "string",
+      "id.orig_p": "int",
+      "id.resp_h": "string",
+      "id.resp_p": "int",
+      "trans_depth": "int",
+      "method": "string",
+      "host": "string",
+      "uri": "string",
+      "referrer": "string",
+      "version": "string",
+      "user_agent": "string",
+      "origin": "string",
+      "request_body_len": "int",
+      "response_body_len": "int",
+      "status_code": "int",
+      "status_msg": "string",
+      "info_code": "int",
+      "info_msg": "string",
+      "tags": "string",
+      "username": "string",
+      "password": "string",
+      "proxied": "string",
+      "orig_fuids": "string",
+      "orig_filenames": "string",
+      "orig_mime_types": "string",
+      "resp_fuids": "string",
+      "resp_filenames": "string",
+      "resp_mime_types": "string"
+    }
+  },
+
+  "zeek_ssl": {
+    "log_type": "ssl",
+    "fields": {
+      "ts": "float",
+      "uid": "string",
+      "id.orig_h": "string",
+      "id.orig_p": "int",
+      "id.resp_h": "string",
+      "id.resp_p": "int",
+      "version": "string",
+      "cipher": "string",
+      "curve": "string",
+      "server_name": "string",
+      "resumed": "bool",
+      "last_alert": "string",
+      "next_protocol": "string",
+      "established": "bool",
+      "cert_chain_fuids": "string",
+      "client_cert_chain_fuids": "string",
+      "subject": "string",
+      "issuer": "string",
+      "client_subject": "string",
+      "client_issuer": "string",
+      "validation_status": "string",
+      "ja3": "string",
+      "ja3s": "string",
+      "ssl_history": "string"
+    }
+  },
+
+  "zeek_ssh": {
+    "log_type": "ssh",
+    "fields": {
+      "ts": "float",
+      "uid": "string",
+      "id.orig_h": "string",
+      "id.orig_p": "int",
+      "id.resp_h": "string",
+      "id.resp_p": "int",
+      "version": "int",
+      "auth_success": "bool",
+      "auth_attempts": "int",
+      "direction": "string",
+      "client": "string",
+      "server": "string",
+      "cipher_alg": "string",
+      "mac_alg": "string",
+      "compression_alg": "string",
+      "kex_alg": "string",
+      "host_key_alg": "string",
+      "host_key": "string"
+    }
+  },
+
+  "zeek_ftp": {
+    "log_type": "ftp",
+    "fields": {
+      "ts": "float",
+      "uid": "string",
+      "id.orig_h": "string",
+      "id.orig_p": "int",
+      "id.resp_h": "string",
+      "id.resp_p": "int",
+      "user": "string",
+      "password": "string",
+      "command": "string",
+      "arg": "string",
+      "mime_type": "string",
+      "file_size": "int",
+      "reply_code": "int",
+      "reply_msg": "string",
+      "data_channel.passive": "bool",
+      "data_channel.orig_h": "string",
+      "data_channel.resp_h": "string",
+      "data_channel.resp_p": "int",
+      "fuid": "string"
+    }
+  },
+
+  "zeek_smtp": {
+    "log_type": "smtp",
+    "fields": {
+      "ts": "float",
+      "uid": "string",
+      "id.orig_h": "string",
+      "id.orig_p": "int",
+      "id.resp_h": "string",
+      "id.resp_p": "int",
+      "trans_depth": "int",
+      "helo": "string",
+      "mailfrom": "string",
+      "rcptto": "string",
+      "date": "string",
+      "from": "string",
+      "to": "string",
+      "cc": "string",
+      "reply_to": "string",
+      "msg_id": "string",
+      "in_reply_to": "string",
+      "subject": "string",
+      "x_originating_ip": "string",
+      "first_received": "string",
+      "second_received": "string",
+      "last_reply": "string",
+      "path": "string",
+      "user_agent": "string",
+      "tls": "bool",
+      "fuids": "string",
+      "is_webmail": "bool"
+    }
+  },
+
+  "zeek_dhcp": {
+    "log_type": "dhcp",
+    "fields": {
+      "ts": "float",
+      "uid": "string",
+      "id.orig_h": "string",
+      "id.orig_p": "int",
+      "id.resp_h": "string",
+      "id.resp_p": "int",
+      "mac": "string",
+      "host_name": "string",
+      "client_fqdn": "string",
+      "domain": "string",
+      "requested_addr": "string",
+      "assigned_addr": "string",
+      "lease_time": "int",
+      "client_message": "string",
+      "server_message": "string",
+      "msg_types": "string",
+      "duration": "float",
+      "server_addr": "string",
+      "client_addr": "string",
+      "uids": "string"
+    }
+  },
+
+  "zeek_rdp": {
+    "log_type": "rdp",
+    "fields": {
+      "ts": "float",
+      "uid": "string",
+      "id.orig_h": "string",
+      "id.orig_p": "int",
+      "id.resp_h": "string",
+      "id.resp_p": "int",
+      "cookie": "string",
+      "result": "string",
+      "security_protocol": "string",
+      "keyboard_layout": "string",
+      "client_build": "string",
+      "client_name": "string",
+      "client_dig_product_id": "string",
+      "desktop_width": "int",
+      "desktop_height": "int",
+      "requested_color_depth": "string",
+      "cert_type": "string",
+      "cert_count": "int",
+      "cert_permanent": "bool",
+      "encryption_level": "string",
+      "encryption_method": "string"
+    }
+  },
+
+  "zeek_smb_files": {
+    "log_type": "smb_files",
+    "fields": {
+      "ts": "float",
+      "uid": "string",
+      "id.orig_h": "string",
+      "id.orig_p": "int",
+      "id.resp_h": "string",
+      "id.resp_p": "int",
+      "fuid": "string",
+      "action": "string",
+      "path": "string",
+      "name": "string",
+      "size": "int",
+      "prev_name": "string",
+      "times.modified": "float",
+      "times.accessed": "float",
+      "times.created": "float",
+      "times.changed": "float"
+    }
+  },
+
+  "zeek_smb_mapping": {
+    "log_type": "smb_mapping",
+    "fields": {
+      "ts": "float",
+      "uid": "string",
+      "id.orig_h": "string",
+      "id.orig_p": "int",
+      "id.resp_h": "string",
+      "id.resp_p": "int",
+      "path": "string",
+      "service": "string",
+      "native_file_system": "string",
+      "share_type": "string"
+    }
+  },
+
+  "zeek_dce_rpc": {
+    "log_type": "dce_rpc",
+    "fields": {
+      "ts": "float",
+      "uid": "string",
+      "id.orig_h": "string",
+      "id.orig_p": "int",
+      "id.resp_h": "string",
+      "id.resp_p": "int",
+      "rtt": "float",
+      "named_pipe": "string",
+      "endpoint": "string",
+      "operation": "string"
+    }
+  },
+
+  "zeek_kerberos": {
+    "log_type": "kerberos",
+    "fields": {
+      "ts": "float",
+      "uid": "string",
+      "id.orig_h": "string",
+      "id.orig_p": "int",
+      "id.resp_h": "string",
+      "id.resp_p": "int",
+      "request_type": "string",
+      "client": "string",
+      "service": "string",
+      "success": "bool",
+      "error_msg": "string",
+      "from": "float",
+      "till": "float",
+      "cipher": "string",
+      "forwardable": "bool",
+      "renewable": "bool",
+      "client_cert_subject": "string",
+      "client_cert_fuid": "string",
+      "server_cert_subject": "string",
+      "server_cert_fuid": "string"
+    }
+  },
+
+  "zeek_ntlm": {
+    "log_type": "ntlm",
+    "fields": {
+      "ts": "float",
+      "uid": "string",
+      "id.orig_h": "string",
+      "id.orig_p": "int",
+      "id.resp_h": "string",
+      "id.resp_p": "int",
+      "username": "string",
+      "hostname": "string",
+      "domainname": "string",
+      "server_nb_computer_name": "string",
+      "server_dns_computer_name": "string",
+      "server_tree_name": "string",
+      "success": "bool"
+    }
+  },
+
+  "zeek_sip": {
+    "log_type": "sip",
+    "fields": {
+      "ts": "float",
+      "uid": "string",
+      "id.orig_h": "string",
+      "id.orig_p": "int",
+      "id.resp_h": "string",
+      "id.resp_p": "int",
+      "trans_depth": "int",
+      "method": "string",
+      "uri": "string",
+      "date": "string",
+      "request_from": "string",
+      "request_to": "string",
+      "response_from": "string",
+      "response_to": "string",
+      "reply_to": "string",
+      "call_id": "string",
+      "seq": "string",
+      "subject": "string",
+      "request_path": "string",
+      "response_path": "string",
+      "user_agent": "string",
+      "status_code": "int",
+      "status_msg": "string",
+      "warning": "string",
+      "request_body_len": "int",
+      "response_body_len": "int",
+      "content_type": "string"
+    }
+  },
+
+  "zeek_snmp": {
+    "log_type": "snmp",
+    "fields": {
+      "ts": "float",
+      "uid": "string",
+      "id.orig_h": "string",
+      "id.orig_p": "int",
+      "id.resp_h": "string",
+      "id.resp_p": "int",
+      "duration": "float",
+      "version": "string",
+      "community": "string",
+      "get_requests": "int",
+      "get_bulk_requests": "int",
+      "get_responses": "int",
+      "set_requests": "int",
+      "display_string": "string",
+      "up_since": "float"
+    }
+  },
+
+  "zeek_radius": {
+    "log_type": "radius",
+    "fields": {
+      "ts": "float",
+      "uid": "string",
+      "id.orig_h": "string",
+      "id.orig_p": "int",
+      "id.resp_h": "string",
+      "id.resp_p": "int",
+      "username": "string",
+      "mac": "string",
+      "framed_addr": "string",
+      "tunnel_client": "string",
+      "connect_info": "string",
+      "reply_msg": "string",
+      "result": "string",
+      "ttl": "int"
+    }
+  },
+
+  "zeek_tunnel": {
+    "log_type": "tunnel",
+    "fields": {
+      "ts": "float",
+      "uid": "string",
+      "id.orig_h": "string",
+      "id.orig_p": "int",
+      "id.resp_h": "string",
+      "id.resp_p": "int",
+      "tunnel_type": "string",
+      "action": "string"
+    }
+  }
+}

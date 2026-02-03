@@ -1,0 +1,30 @@
+{
+  "kafka": {
+    "brokers": ["localhost:9092"],
+    "topic": "zeek-raw",
+    "group_id": "parquet-writer-group-test",
+    "max_poll_records": 1000
+  },
+  "output": {
+    "parquet": {
+      "enabled": true,
+      "base_path": "./output",
+      "file_prefix": "events"
+    },
+    "kafka": {
+      "enabled": true,
+      "brokers": ["localhost:9092"],
+      "topic": "zeek-normalized",
+      "compression": "lz4"
+    }
+  },
+  "log": {
+    "path": "./log"
+  },
+  "write": {
+    "flush_buffer_mb": 1,
+    "flush_interval_seconds": 60,
+    "flush_event_count": 1000
+  }
+}
+
