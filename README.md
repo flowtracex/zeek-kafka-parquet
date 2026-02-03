@@ -68,7 +68,17 @@ go build -o zeek-parquet-pipeline main.go
 
 ### normalization.json
 
-Defines field promotion and enrichment per log type:
+**Core concept**: Defines the three-layer data model per log type.
+
+- **`source`**: Zeek log type identifier (e.g., `zeek_dns`, `zeek_conn`)
+- **`promote`**: Field promotion mapping (raw Zeek field → canonical normalized field)
+  - Example: `"id.orig_h": "src_ip"` promotes `id.orig_h` to `src_ip`
+  - Promoted fields replace raw fields (no duplication)
+- **`static`**: Static fields added to all events of this log type
+  - Example: `"event_type": "dns"`, `"event_class": "dns"`
+- **`enrich`**: Per-log-type enrichment flags
+  - `"time": true` → Enables time breakdown (year, month, day, hour, weekday)
+  - `"network": true` → Enables network analysis (private IP detection, direction, service)
 
 ```json
 {
@@ -95,7 +105,15 @@ Defines field promotion and enrichment per log type:
 
 ### schema.json
 
-Defines raw field structure for each Zeek log type. Used to generate Parquet schemas.
+**Core concept**: Defines raw field structure for each Zeek log type.
+
+- Used by `generate_schema.go` to auto-generate `schema/events.go`
+- Defines all possible raw fields with their types (string, int, float, bool, etc.)
+- Fields not in `normalization.json` → `promote` remain as raw fields in Parquet
+- **Important**: After modifying this file, regenerate the schema:
+  ```bash
+  go run generate_schema.go > schema/events.go
+  ```
 
 ## Architecture
 
@@ -126,8 +144,8 @@ Fan-out
 ├── core/                  # Core pipeline components
 │   ├── kafka.go          # Kafka consumer
 │   ├── normalize.go      # Field normalization
-│   ├── enrich.go         # Data enrichment
-│   ├── dispatch.go       # Event routing
+│   ├── enrich.go         # Runtime enrichment (time, network)
+│   ├── pipeline_flow.go  # Event routing by log_type
 │   ├── parquet.go        # Parquet writer
 │   ├── kafka_producer.go # Kafka output producer
 │   ├── fanout.go         # Output fan-out

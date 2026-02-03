@@ -167,12 +167,12 @@ func main() {
 	fanOut := core.NewFanOut()
 
 	// Setup Parquet output (if enabled)
-	var dispatcher *core.Dispatcher
-	var dispatcherInput chan *core.EnrichedEvent
+	var pipelineFlow *core.PipelineFlow
+	var pipelineFlowInput chan *core.EnrichedEvent
 	if config.Output.Parquet.Enabled {
-		dispatcher = core.NewDispatcher(logTypes, 10000)
-		dispatcherInput = make(chan *core.EnrichedEvent, 10000)
-		fanOut.AddOutput(dispatcherInput)
+		pipelineFlow = core.NewPipelineFlow(logTypes, 10000)
+		pipelineFlowInput = make(chan *core.EnrichedEvent, 10000)
+		fanOut.AddOutput(pipelineFlowInput)
 	}
 
 	// Setup Kafka output (if enabled)
@@ -289,18 +289,18 @@ func main() {
 			FlushEventCount:  config.Write.FlushEventCount,
 		}
 
-		// Start dispatcher
+		// Start pipeline flow router
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			dispatcher.Start(ctx, dispatcherInput)
+			pipelineFlow.Start(ctx, pipelineFlowInput)
 		}()
 
 		// Start Parquet writers (one per log type)
 		state.mu.Lock()
 		for _, logType := range logTypes {
 			logType := logType
-			writer := core.NewParquetWriter(logType, writerConfig, dispatcher.GetRoute(logType))
+			writer := core.NewParquetWriter(logType, writerConfig, pipelineFlow.GetRoute(logType))
 			state.writers = append(state.writers, writer)
 			wg.Add(1)
 			go func() {
